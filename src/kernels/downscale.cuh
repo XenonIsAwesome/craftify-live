@@ -2,9 +2,9 @@
 #define DOWNSCALE_CUH
 
 #include <cuda_runtime.h>
-#include <cstdint>
 
-namespace craftify::kernels {
+namespace craftify {
+    namespace kernels {
 
     __global__ void downscale_image(
         const uchar4* input_img,
@@ -15,6 +15,7 @@ namespace craftify::kernels {
         unsigned int output_height, 
         unsigned int scale_factor);
 
-} // craftify_kernels
+    }; // namespace kernels
+}; // namespace craftify
 
 #endif //DOWNSCALE_CUH
