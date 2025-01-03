@@ -2,11 +2,9 @@ build_folder="build"
 
 if [ ! -d $build_folder ]; then
     mkdir -p $build_folder
-    pushd $build_folder
-    cmake ..
-    popd
 fi
 
-pushd build
-make
+pushd $build_folder
+    cmake -DOpenCV_DIR=/c/lib/install/opencv/ ..
+    cmake --build .
 popd
