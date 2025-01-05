@@ -10,6 +10,7 @@ def get_score(img_path):
         sum_r = 0
         sum_g = 0
         sum_b = 0
+        sum_a = 0
 
         for y in range(img.height):
             for x in range(img.width):
@@ -17,13 +18,15 @@ def get_score(img_path):
                 sum_r += rgba[0]
                 sum_g += rgba[1]
                 sum_b += rgba[2]
+                sum_a += rgba[3]
 
         total_pixels = img.width * img.height
         avg_r = sum_r // total_pixels
         avg_g = sum_g // total_pixels
         avg_b = sum_b // total_pixels
+        avg_a = sum_a // total_pixels
 
-        return avg_r + avg_g + avg_b
+        return (avg_r + avg_g + avg_b, avg_r, avg_g, avg_b, avg_a)
 
 
 def pack_textures():
@@ -41,6 +44,7 @@ def pack_textures():
     texture = Image.new('RGBA', (img_width * img_per_row, img_height * img_per_col), (0, 0, 0, 255))
 
     scores = []
+    avg_colors = []
     for i, img_path in tqdm(enumerate(images), desc="Packing textures", total=len(images)):
         img = Image.open(BASE_PATH + img_path)
         img = img.convert("RGBA")
@@ -48,11 +52,10 @@ def pack_textures():
         x = i % img_per_row
         y = i // img_per_row
 
+        score, r, g, b, a = get_score(BASE_PATH + img_path)
+        avg_colors.append((r, g, b, a))
         if x == 0:
-            score = get_score(BASE_PATH + img_path)
             scores.append(score)
-
-
 
         texture.paste(img, (x * img_width, y * img_height))
 
@@ -64,3 +67,7 @@ def pack_textures():
 
     with open('assets/scores.bin', 'wb') as f:
         f.write(data)
+    
+    with open('assets/colors.bin', 'wb') as f:
+        for c in avg_colors:
+            f.write(pack("BBBB", *c))
