@@ -2,6 +2,7 @@ import os
 from PIL import Image
 from struct import pack
 from tqdm import tqdm
+from math import ceil
 
 def get_score(img_path):
     with Image.open(img_path) as img:
@@ -36,12 +37,11 @@ def pack_textures():
     images = sorted(os.listdir(BASE_PATH), key=lambda x: get_score(BASE_PATH + x))
 
     # 16x16 images
-    img_width = 16
-    img_height = 16
+    block_side_size = 16
     img_per_row = 32
-    img_per_col = 18
+    img_per_col = ceil(len(images) / img_per_row)
 
-    texture = Image.new('RGBA', (img_width * img_per_row, img_height * img_per_col), (0, 0, 0, 255))
+    texture = Image.new('RGBA', (block_side_size * img_per_row, block_side_size * img_per_col), (0, 0, 0, 255))
 
     scores = []
     avg_colors = []
@@ -57,10 +57,11 @@ def pack_textures():
         if x == 0:
             scores.append(score)
 
-        texture.paste(img, (x * img_width, y * img_height))
+        texture.paste(img, (x * block_side_size, y * block_side_size))
 
     texture.save('assets/atlas.png')
 
+    # Scores
     print("Scores: ", scores)
     fmt = f'{len(scores)}Q'
     data = pack(fmt, *scores)
@@ -68,6 +69,7 @@ def pack_textures():
     with open('assets/scores.bin', 'wb') as f:
         f.write(data)
     
+    # Average Colors
     with open('assets/colors.bin', 'wb') as f:
         for c in avg_colors:
             f.write(pack("BBBB", *c))

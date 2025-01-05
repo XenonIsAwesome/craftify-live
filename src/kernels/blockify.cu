@@ -42,10 +42,6 @@ namespace craftify {
             if (x < input_width && y < input_height && x == 0 && y == 0) {
                 uchar4 input_pixel = input_img[y * input_width + x];
 
-                // if (x == 10 && y == 10) {
-                //     printf("Pixel[%d, %d](#%X%X%X)\n", x, y, input_pixel.x, input_pixel.y, input_pixel.z);
-                // }
-
                 // TODO: Find a better way to initialize this
                 int minimum_deviation = 256 * 256 * 256;
                 int best_block_x = 0;
@@ -62,7 +58,6 @@ namespace craftify {
                     for (int atlas_grid_x = 0; atlas_grid_x < atlas_grid_width; atlas_grid_x++) {
                         int color_index = atlas_grid_y * atlas_grid_width + atlas_grid_x;
                         uchar4 avg_color = avg_colors[color_index];
-
 
                         if (color_index > avg_colors_size) {
                             continue;
@@ -82,12 +77,12 @@ namespace craftify {
                     }
                 }
 
-                // if (x == 10 && y == 10) {
-                //     printf("Best block for pixel Input[%d, %d](#%X%X%X) is Atlas[%d, %d](#%X%X%X) | deviation = %d\n", 
-                //         x, y, input_pixel.x, input_pixel.y, input_pixel.z,  /// Input pixel
-                //         best_block_x / BLOCK_SIDE_SIZE, best_block_y / BLOCK_SIDE_SIZE, best_avg_color.x, best_avg_color.y, best_avg_color.z,  /// Block avg color
-                //         minimum_deviation);
-                // }
+                if (x == 0 && y == 0) {
+                    printf("Best block for pixel Input[%d, %d](#%X%X%X) is Atlas[%d, %d](#%X%X%X) | deviation = %d\n", 
+                        x, y, input_pixel.x, input_pixel.y, input_pixel.z,  /// Input pixel
+                        best_block_x / BLOCK_SIDE_SIZE, best_block_y / BLOCK_SIDE_SIZE, best_avg_color.x, best_avg_color.y, best_avg_color.z,  /// Block avg color
+                        minimum_deviation);
+                }
 
                 /// Copy the best block to the output image
                 for (int blocky = 0; blocky < BLOCK_SIDE_SIZE; blocky++) {
