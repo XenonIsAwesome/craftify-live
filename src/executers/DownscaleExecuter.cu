@@ -10,7 +10,7 @@ namespace craftify {
             unsigned int outputWidth = inputWidth / m_scale_factor;
             unsigned int outputHeight = inputHeight / m_scale_factor;
 
-            auto output = std::make_shared<cv::Mat>(outputHeight, outputWidth, input->type());
+            auto output = std::make_shared<cv::Mat>(outputHeight, outputWidth, CV_8UC4);
 
             uchar4 *d_input, *d_output;
             size_t inputSize = inputWidth * inputHeight * sizeof(uchar4);

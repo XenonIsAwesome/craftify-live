@@ -8,6 +8,7 @@ namespace craftify {
         ColorCVT::execute(std::shared_ptr<cv::Mat> input) {
             auto output = std::make_shared<cv::Mat>();
             cv::cvtColor(*input, *output, m_cvt_mode);
+            // cv::resize(*output, *output, cv::Size(input->cols / 16, input->rows / 16), 0, 0, cv::INTER_LANCZOS4);
 
             return output;
         }

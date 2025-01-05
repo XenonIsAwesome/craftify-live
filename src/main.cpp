@@ -4,11 +4,13 @@
 #include "executers/CameraFetcher.h"
 #include "executers/ColorCVT.h"
 #include "executers/ImgShow.h"
+#include "executers/BlockifyExecuter.cuh"
 
 constexpr int CAMERA_ID = 1;
-constexpr unsigned int SCALE_FACTOR = 2u;
-constexpr const char *WINDOW_NAME = "Downscale";
-
+constexpr unsigned int SCALE_FACTOR = 4u;
+constexpr const char *WINDOW_NAME = "Blockify";
+constexpr const char *ATLAS_PATH = "assets/atlas.png";
+constexpr const char *AVG_COLORS_PATH = "assets/colors.bin";
 
 int main() {
     bool running = true;
@@ -18,6 +20,7 @@ int main() {
     std::vector<std::shared_ptr<craftify::executers::DeviceExecuter<cv::Mat, cv::Mat>>> executers;
     executers.emplace_back(std::make_shared<craftify::executers::ColorCVT>(cv::COLOR_RGB2RGBA));
     executers.emplace_back(std::make_shared<craftify::executers::DownscaleExecuter>(SCALE_FACTOR));
+    executers.emplace_back(std::make_shared<craftify::executers::BlockifyExecuter>(ATLAS_PATH, AVG_COLORS_PATH));
     executers.emplace_back(std::make_shared<craftify::executers::ImgShow>(WINDOW_NAME, running));
 
     while(running) {
@@ -29,6 +32,9 @@ int main() {
             }
             work_item = executer->execute(work_item);
         }
+
+        // running = false;
+        // cv::imwrite("output.png", *work_item);
     }
     return 0;
 }
