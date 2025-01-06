@@ -6,6 +6,16 @@
 namespace craftify {
     namespace kernels {
 
+    __device__ void copy_best_block(
+        uchar4* output_img, 
+        const uchar4* texture_atlas, 
+        
+        unsigned int output_width, 
+        unsigned int atlas_width,
+
+        int x, int y,
+        int best_block_x, int best_block_y);
+        
     __device__ int calc_deviation(uchar4 a, uchar4 b);
 
     __global__ void blockify_image(
