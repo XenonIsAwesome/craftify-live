@@ -20,7 +20,7 @@ namespace craftify {
         }
 
         std::shared_ptr<cv::Mat>
-        CameraFetcher::execute(std::shared_ptr<void> input) {
+        CameraFetcher::process(std::shared_ptr<void> input) {
             auto frame = std::make_shared<cv::Mat>();
             cap >> *frame.get();
 

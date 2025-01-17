@@ -5,6 +5,8 @@
 #include "executers/ColorCVT.h"
 #include "executers/ImgShow.h"
 #include "executers/BlockifyExecuter.cuh"
+#include "pipeline_tools/UntypedModule.h"
+#include "pipeline_tools/Pipeline.h"
 
 constexpr int CAMERA_ID = 1;
 constexpr unsigned int PRE_BLOCKIFY_DOWNSCALE_FACTOR = 4u;
@@ -17,24 +19,18 @@ constexpr const char *AVG_COLORS_PATH = "assets/colors.bin";
 int main() {
     bool running = true;
 
-    auto start_module = std::make_shared<craftify::executers::CameraFetcher>(CAMERA_ID);
+    std::vector<std::shared_ptr<pipeline_tools::UntypedModule>> modules;
+     modules.emplace_back(std::make_shared<craftify::executers::CameraFetcher>(CAMERA_ID));
+    modules.emplace_back(std::make_shared<craftify::executers::ColorCVT>(cv::COLOR_BGR2RGBA));
+    modules.emplace_back(std::make_shared<craftify::executers::DownscaleExecuter>(PRE_BLOCKIFY_DOWNSCALE_FACTOR));
+    modules.emplace_back(std::make_shared<craftify::executers::BlockifyExecuter>(ATLAS_PATH, AVG_COLORS_PATH));
+    modules.emplace_back(std::make_shared<craftify::executers::DownscaleExecuter>(POST_BLOCKIFY_DOWNSCALE_FACTOR));  // TODO: Switch with FitToScreen
+    modules.emplace_back(std::make_shared<craftify::executers::ImgShow>(WINDOW_NAME, running));
 
-    std::vector<std::shared_ptr<craftify::executers::DeviceExecuter<cv::Mat, cv::Mat>>> executers;
-    executers.emplace_back(std::make_shared<craftify::executers::ColorCVT>(cv::COLOR_BGR2RGBA));
-    executers.emplace_back(std::make_shared<craftify::executers::DownscaleExecuter>(PRE_BLOCKIFY_DOWNSCALE_FACTOR));
-    executers.emplace_back(std::make_shared<craftify::executers::BlockifyExecuter>(ATLAS_PATH, AVG_COLORS_PATH));
-    executers.emplace_back(std::make_shared<craftify::executers::DownscaleExecuter>(POST_BLOCKIFY_DOWNSCALE_FACTOR));
-    executers.emplace_back(std::make_shared<craftify::executers::ImgShow>(WINDOW_NAME, running));
+    auto pipeline = std::make_shared<pipeline_tools::Pipeline>(modules);
+    pipeline->start();
 
-    while(running) {
-        std::shared_ptr<cv::Mat> work_item = start_module->execute(nullptr);
-        
-        for (auto &executer : executers) {
-            if (work_item == nullptr) {
-                break;
-            }
-            work_item = executer->execute(work_item);
-        }
-    }
-    return 0;
+    while(running);
+
+    pipeline->stop();
 }

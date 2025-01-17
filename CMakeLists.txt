@@ -12,7 +12,7 @@ project(CraftifyLive LANGUAGES CXX CUDA)
 find_package(OpenCV REQUIRED)
 
 # add kernels to include path
-include_directories("src/kernels src/executers")
+include_directories("src/kernels src/executers src/pipeline_tools")
 
 # GLOB recurse to find all .h .cpp .cu .cuh in src/
 file(GLOB_RECURSE SOURCES "src/*.h" "src/*.cpp" "src/*.cu" "src/*.cuh")

@@ -4,7 +4,7 @@
 namespace craftify {
     namespace executers {
         std::shared_ptr<cv::Mat>
-        DownscaleExecuter::execute(std::shared_ptr<cv::Mat> input) {
+        DownscaleExecuter::process(std::shared_ptr<cv::Mat> input) {
             unsigned int inputWidth = input->cols;
             unsigned int inputHeight = input->rows;
             unsigned int outputWidth = inputWidth / m_scale_factor;
