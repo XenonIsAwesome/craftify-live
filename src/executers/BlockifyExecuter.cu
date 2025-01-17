@@ -80,7 +80,7 @@ namespace craftify {
         }
 
         std::shared_ptr<cv::Mat>
-        BlockifyExecuter::execute(std::shared_ptr<cv::Mat> input) {
+        BlockifyExecuter::process(std::shared_ptr<cv::Mat> input) {
             unsigned int inputWidth = input->cols;
             unsigned int inputHeight = input->rows;
             unsigned int outputWidth = inputWidth * BLOCK_SIZE;

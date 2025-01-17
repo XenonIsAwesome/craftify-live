@@ -7,16 +7,16 @@
 #include <string>
 #include <opencv2/opencv.hpp>
 #include <vector_types.h>
-#include "DeviceExecuter.cuh"
+#include "../pipeline_tools/Module.hpp"
 
 namespace craftify {
     namespace executers {
-        class BlockifyExecuter: public DeviceExecuter<cv::Mat, cv::Mat> {
+        class BlockifyExecuter: public pipeline_tools::Module<cv::Mat, cv::Mat> {
             public:
                 BlockifyExecuter(const std::string &texture_atlas_path, const std::string &avg_colors_path);
                 ~BlockifyExecuter();
 
-                std::shared_ptr<cv::Mat> execute(std::shared_ptr<cv::Mat> input) override;
+                std::shared_ptr<cv::Mat> process(std::shared_ptr<cv::Mat> input) override;
                 
             private:
                 cv::Mat load_texture_atlas(const std::string &texture_atlas_path);
