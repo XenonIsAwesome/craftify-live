@@ -20,7 +20,7 @@ int main() {
     bool running = true;
 
     std::vector<std::shared_ptr<pipeline_tools::UntypedModule>> modules;
-     modules.emplace_back(std::make_shared<craftify::executers::CameraFetcher>(CAMERA_ID));
+    modules.emplace_back(std::make_shared<craftify::executers::CameraFetcher>(CAMERA_ID));
     modules.emplace_back(std::make_shared<craftify::executers::ColorCVT>(cv::COLOR_BGR2RGBA));
     modules.emplace_back(std::make_shared<craftify::executers::DownscaleExecuter>(PRE_BLOCKIFY_DOWNSCALE_FACTOR));
     modules.emplace_back(std::make_shared<craftify::executers::BlockifyExecuter>(ATLAS_PATH, AVG_COLORS_PATH));
